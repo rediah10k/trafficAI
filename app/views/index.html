@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrafficAI - Reconocimiento de Señales</title>
+    <!-- Fuentes y Iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS Estático -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <i class="fas fa-traffic-light logo-icon"></i>
+                <h1>TrafficAI</h1>
+                <p>Sistema de Clasificación CNN</p>
+            </div>
+
+            <!-- Mostrar errores si existen -->
+            {% if error %}
+            <div class="alert-error">
+                <i class="fas fa-exclamation-circle"></i> {{ error }}
+            </div>
+            {% endif %}
+
+            <!-- Formulario -->
+            {% if not prediction %}
+            <form action="/" method="POST" enctype="multipart/form-data" id="upload-form">
+                
+                <div class="upload-area" id="drop-area">
+                    <!-- El evento onchange ahora lo maneja main.js -->
+                    <input type="file" name="file" id="fileInput" accept="image/*" required>
+                    <div class="upload-content" id="upload-content">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p><strong>Haz clic o arrastra</strong><br>tu imagen aquí</p>
+                    </div>
+                </div>
+                
+                <!-- Previsualización -->
+                <div class="preview-container" id="previewContainer">
+                    <img id="previewImg" src="" alt="Vista previa">
+                </div>
+
+                <button type="submit" class="btn-predict" id="predictBtn">
+                    <i class="fas fa-magic" style="margin-right: 8px;"></i> Analizar Imagen
+                </button>
+            </form>
+
+            <!-- Spinner -->
+            <div class="loader" id="loader" style="display: none;"></div>
+            {% endif %}
+
+
+            <!-- RESULTADOS -->
+            {% if prediction %}
+            <div class="result-box">
+                {% if img_url %}
+                <div class="result-preview-container">
+                    <img src="{{ img_url }}" alt="Imagen analizada">
+                </div>
+                {% endif %}
+
+                <div style="margin-top: 20px;">
+                    <div class="prediction-title">Señal Detectada</div>
+                    <h2 class="prediction-value">{{ prediction }}</h2>
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stat-row">
+                        <div class="stat-header">
+                            <span>Confianza del Modelo</span>
+                            <span>{{ confidence }}</span>
+                        </div>
+                        <div class="progress-bg">
+                            <!-- CORRECCIÓN: Iniciamos en 0% y usamos JS para animar -->
+                            <!-- Quitamos el estilo inline para usar el color del CSS (var--accent) que se ve mejor -->
+                            <div class="progress-fill" id="animatedBar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <a href="/" style="display: inline-block; margin-top: 25px; text-decoration: none; color: #636e72; border: 1px solid #b2bec3; padding: 10px 25px; border-radius: 50px; transition: all 0.3s;">
+                    <i class="fas fa-redo"></i> Probar otra imagen
+                </a>
+            </div>
+
+            <!-- Script para animar la barra de resultados -->
+            <script>
+                setTimeout(function() {
+                    const bar = document.getElementById('animatedBar');
+                    if(bar) {
+                        // Inyectamos el valor de confianza aquí
+                        bar.style.width = "{{ confidence|default('0%') }}";
+                        // Opcional: Si quieres forzar el color morado (primary) descomenta la línea de abajo
+                        // bar.style.backgroundColor = "var(--primary)";
+                    }
+                }, 100);
+            </script>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- JS Estático -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

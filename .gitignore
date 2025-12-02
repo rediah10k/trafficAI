@@ -1,0 +1,25 @@
+Entornos virtuales (Nunca subir esto)
+
+venv/
+env/
+.env
+
+Archivos compilados de Python (Se generan solos al ejecutar)
+
+pycache/
+*.pyc
+
+Archivos de configuración de sistema o editor
+
+.DS_Store
+.vscode/
+.idea/
+
+Base de datos local (si usas SQLite)
+
+*.db
+*.sqlite3
+
+Carpetas de subidas (Opcional: Si quieres ignorar las imágenes de prueba)
+
+app/static/uploads/
